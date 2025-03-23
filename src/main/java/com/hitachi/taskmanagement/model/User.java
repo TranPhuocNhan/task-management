@@ -16,7 +16,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,15 +36,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Size(min = 3, max = 20)
     @Column(nullable = false, unique = true)
     private String username;
 
+    @NotBlank
+    @Size(min = 6, max = 120)
     @Column(nullable = false)
     private String password;
 
+    @NotBlank
+    @Size(max = 50)
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank
+    @Size(max = 100)
     private String fullName;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -53,9 +67,23 @@ public class User {
     @OneToMany(mappedBy = "assignedTo")
     private List<Task> assignedTasks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "createdBy")
+    private List<Project> createdProjects = new ArrayList<>();
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

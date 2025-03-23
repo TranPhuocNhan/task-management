@@ -11,16 +11,19 @@ import lombok.Data;
 
 @Data
 public class TaskCreateRequest {
-    @NotBlank(message = "Tên công việc không được để trống")
-    private String title;
+    @NotBlank(message = "Task name is required")
+    private String name;
 
-    @NotNull(message = "Độ ưu tiên không được để trống")
+    @NotNull(message = "Description is required")
+    private String description;
+
+    @NotNull(message = "Priority is required")
     private TaskPriority priority;
 
-    @NotNull(message = "Ngày hết hạn không được để trống")
+    @NotNull(message = "Due date is required")
     private LocalDateTime dueDate;
 
-    @NotNull(message = "ID dự án không được để trống")
+    @NotNull(message = "Project ID is required")
     private Long projectId;
 
     private Long assignedToUserId;
