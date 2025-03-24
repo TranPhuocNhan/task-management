@@ -8,7 +8,7 @@ public interface UserService {
     UserDTO updateUser(Long id, UserDTO userDTO);
     UserDTO getUserById(Long id);
     UserDTO getUserByUsername(String username);
-    List<UserDTO> getAllUsers();
+    List<UserDTO> getAllUsers(int page, int size);
     void deleteUser(Long id);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);

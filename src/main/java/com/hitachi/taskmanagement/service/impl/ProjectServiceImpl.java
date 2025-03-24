@@ -9,17 +9,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.hitachi.taskmanagement.model.Project;
 import com.hitachi.taskmanagement.model.dto.request.ProjectRequest;
 import com.hitachi.taskmanagement.model.dto.response.ProjectResponse;
 import com.hitachi.taskmanagement.model.enums.ProjectStatus;
 import com.hitachi.taskmanagement.repository.ProjectRepository;
+import com.hitachi.taskmanagement.repository.UserRepository;
 import com.hitachi.taskmanagement.service.ProjectService;
 
+@Service
 public class ProjectServiceImpl implements ProjectService {
 
   @Autowired
   private ProjectRepository projectRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   @Override
   public ProjectResponse createProject(ProjectRequest projectRequest) {
@@ -27,11 +34,13 @@ public class ProjectServiceImpl implements ProjectService {
     project.setName(projectRequest.getName());
     project.setDescription(projectRequest.getDescription());
     project.setStatus(ProjectStatus.valueOf(projectRequest.getStatus()));
+    project.setCreatedBy(userRepository.findByUsername(projectRequest.getCreatedBy()).orElseThrow(() -> new RuntimeException("User not found")));
     project.setStartDate(LocalDateTime.parse(projectRequest.getStartDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     project.setEndDate(
         LocalDateTime.parse(projectRequest.getEndDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     
-    return convertToProjectResponse(project);
+    Project savedProject = projectRepository.save(project);
+    return convertToProjectResponse(savedProject);
   }
 
   @Override
@@ -42,7 +51,9 @@ public class ProjectServiceImpl implements ProjectService {
     project.setStatus(ProjectStatus.valueOf(projectRequest.getStatus()));
     project.setStartDate(LocalDateTime.parse(projectRequest.getStartDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     project.setEndDate(LocalDateTime.parse(projectRequest.getEndDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-    return convertToProjectResponse(project);
+    
+    Project updatedProject = projectRepository.save(project);
+    return convertToProjectResponse(updatedProject);
   }
 
   @Override
@@ -70,6 +81,8 @@ public class ProjectServiceImpl implements ProjectService {
     projectResponse.setName(project.getName());
     projectResponse.setDescription(project.getDescription());
     projectResponse.setStatus(project.getStatus());
+    projectResponse.setStartDate(project.getStartDate());
+    projectResponse.setEndDate(project.getEndDate());
     projectResponse.setCreatedBy(project.getCreatedBy().getFullName());
     projectResponse.setCreatedAt(project.getCreatedAt());
     projectResponse.setUpdatedAt(project.getUpdatedAt());

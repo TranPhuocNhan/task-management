@@ -1,5 +1,4 @@
-package com.hitachi.taskmanagement.dto.request;
-
+package com.hitachi.taskmanagement.model.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,7 +7,7 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-public class SignupRequest {
+public class SignUpRequest {
     @NotBlank(message = "Username cannot be blank")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
@@ -28,4 +27,5 @@ public class SignupRequest {
     private String lastName;
 
     private Set<String> roles;
-} 
+
+}

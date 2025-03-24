@@ -9,15 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.hitachi.taskmanagement.model.Task;
 import com.hitachi.taskmanagement.model.Project;
+import com.hitachi.taskmanagement.model.User;
 import com.hitachi.taskmanagement.model.dto.request.TaskCreateRequest;
 import com.hitachi.taskmanagement.model.dto.response.TaskResponse;
+import com.hitachi.taskmanagement.model.enums.TaskStatus;
 import com.hitachi.taskmanagement.repository.ProjectRepository;
 import com.hitachi.taskmanagement.repository.TaskRepository;
+import com.hitachi.taskmanagement.repository.UserRepository;
 import com.hitachi.taskmanagement.service.TaskService;
 
+@Service
 public class TaskServiceImpl implements TaskService {
 
   @Autowired
@@ -26,18 +31,33 @@ public class TaskServiceImpl implements TaskService {
   @Autowired
   private ProjectRepository projectRepository;
 
+  @Autowired
+  private UserRepository userRepository;
+
   @Override
   public TaskResponse createTask(TaskCreateRequest taskRequest) {
     Task task = new Task();
     task.setName(taskRequest.getName());
     task.setDescription(taskRequest.getDescription());
+    task.setPriority(taskRequest.getPriority());
+    task.setStatus(TaskStatus.TODO);
     
     Project project = projectRepository.findById(taskRequest.getProjectId())
         .orElseThrow(() -> new RuntimeException("Project not found"));
     task.setProject(project);
     
-    task.setDueDate(taskRequest.getDueDate());
-    return convertToTaskResponse(task);
+    if (taskRequest.getAssignedToUserId() != null) {
+      User user = userRepository.findById(taskRequest.getAssignedToUserId())
+          .orElseThrow(() -> new RuntimeException("User not found"));
+      task.setAssignedTo(user);
+    }
+    
+    task.setDueDate(LocalDateTime.parse(taskRequest.getDueDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) );
+    task.setCreatedAt(LocalDateTime.now());
+    task.setUpdatedAt(LocalDateTime.now());
+    
+    Task savedTask = taskRepository.save(task);
+    return convertToTaskResponse(savedTask);
   }
 
   @Override
@@ -45,8 +65,11 @@ public class TaskServiceImpl implements TaskService {
     Task task = taskRepository.findById(id).orElseThrow(() ->new RuntimeException("Task not found"));
     task.setName(taskRequest.getName());
     task.setDescription(taskRequest.getDescription());
-    task.setDueDate(taskRequest.getDueDate());
-    return convertToTaskResponse(task);
+    task.setPriority(taskRequest.getPriority());
+    task.setDueDate(LocalDateTime.parse(taskRequest.getDueDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+    Task updatedTask = taskRepository.save(task);
+    return convertToTaskResponse(updatedTask);
   }
 
   @Override

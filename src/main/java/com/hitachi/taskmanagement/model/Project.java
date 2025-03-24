@@ -2,7 +2,9 @@ package com.hitachi.taskmanagement.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.hitachi.taskmanagement.model.enums.ProjectStatus;
 
@@ -15,6 +17,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -54,6 +58,14 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    @ManyToMany
+    @JoinTable(
+        name = "project_team_members",
+        joinColumns = @JoinColumn(name = "project_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> teamMembers = new HashSet<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
