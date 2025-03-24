@@ -21,6 +21,8 @@ import com.hitachi.taskmanagement.repository.ProjectRepository;
 import com.hitachi.taskmanagement.repository.TaskRepository;
 import com.hitachi.taskmanagement.repository.UserRepository;
 import com.hitachi.taskmanagement.service.TaskService;
+import com.hitachi.taskmanagement.aspect.Loggable;    
+
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -34,6 +36,7 @@ public class TaskServiceImpl implements TaskService {
   @Autowired
   private UserRepository userRepository;
 
+  @Loggable
   @Override
   public TaskResponse createTask(TaskCreateRequest taskRequest) {
     Task task = new Task();
@@ -60,6 +63,7 @@ public class TaskServiceImpl implements TaskService {
     return convertToTaskResponse(savedTask);
   }
 
+  @Loggable
   @Override
   public TaskResponse updateTask(Long id, TaskCreateRequest taskRequest) {
     Task task = taskRepository.findById(id).orElseThrow(() ->new RuntimeException("Task not found"));
@@ -72,12 +76,15 @@ public class TaskServiceImpl implements TaskService {
     return convertToTaskResponse(updatedTask);
   }
 
+  
+  @Loggable
   @Override
   public TaskResponse getTaskById(Long id) {
     Task task = taskRepository.findById(id).orElseThrow(() ->new RuntimeException("Task not found"));
     return convertToTaskResponse(task);
   }
 
+  @Loggable
   @Override
   public List<TaskResponse> getAllTasks(int page, int size) {
     Pageable pageable = PageRequest.of(page,size);
@@ -86,6 +93,7 @@ public class TaskServiceImpl implements TaskService {
     return taskResponses;
   }
 
+  @Loggable
   @Override
   public void deleteTask(Long id) {
     taskRepository.deleteById(id);
