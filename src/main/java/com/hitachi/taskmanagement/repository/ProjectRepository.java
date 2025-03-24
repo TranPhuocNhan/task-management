@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-    List<Project> findByManager(User manager);
     List<Project> findByTeamMembersContaining(User teamMember);
+  
     boolean existsByName(String name);
 }

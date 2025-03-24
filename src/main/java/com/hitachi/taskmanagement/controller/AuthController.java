@@ -112,4 +112,9 @@ public class AuthController {
 
         return ResponseEntity.ok("User registered successfully!");
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        return ResponseEntity.ok("Hello World");
+    }
 }

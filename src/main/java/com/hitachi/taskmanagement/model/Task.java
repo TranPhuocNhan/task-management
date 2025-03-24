@@ -51,6 +51,10 @@ public class Task {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @ManyToOne
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

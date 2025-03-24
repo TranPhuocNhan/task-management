@@ -21,7 +21,7 @@ public class TaskCreateRequest {
     private TaskPriority priority;
 
     @NotNull(message = "Due date is required")
-    private LocalDateTime dueDate;
+    private String dueDate;
 
     @NotNull(message = "Project ID is required")
     private Long projectId;
