@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class TaskResponse {
     private Long id;
-    private String title;
+    private String name;
     private String description;
     private TaskPriority priority;
     private TaskStatus status;

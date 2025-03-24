@@ -9,6 +9,6 @@ public interface ProjectService {
   ProjectResponse createProject(ProjectRequest projectRequest);
   ProjectResponse updateProject(Long id, ProjectRequest projectRequest);
   ProjectResponse getProjectById(Long id);
-  List<ProjectResponse> getAllProjects();
+  List<ProjectResponse> getAllProjects(int page, int size);
   void deleteProject(Long id);
 }

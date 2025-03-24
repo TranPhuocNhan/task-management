@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import com.hitachi.taskmanagement.model.Project;
 import com.hitachi.taskmanagement.model.dto.request.ProjectRequest;
 import com.hitachi.taskmanagement.model.dto.response.ProjectResponse;
 import com.hitachi.taskmanagement.model.enums.ProjectStatus;
 import com.hitachi.taskmanagement.repository.ProjectRepository;
 import com.hitachi.taskmanagement.service.ProjectService;
-import com.hitachi.taskmanagement.service.UserService;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -51,9 +52,11 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
-  public List<ProjectResponse> getAllProjects() {
-    List<Project> projects = projectRepository.findAll();
-    return projects.stream().map(this::convertToProjectResponse).collect(Collectors.toList());
+  public List<ProjectResponse> getAllProjects(int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<Project> projects = projectRepository.findAll(pageable);
+    List<ProjectResponse> projectResponses = projects.stream().map(this::convertToProjectResponse).collect(Collectors.toList());
+    return projectResponses;
   }
 
   @Override
