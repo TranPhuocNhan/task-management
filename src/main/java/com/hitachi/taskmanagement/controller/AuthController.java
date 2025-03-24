@@ -1,13 +1,13 @@
 package com.hitachi.taskmanagement.controller;
 
-import com.hitachi.taskmanagement.dto.request.SignupRequest;
 import com.hitachi.taskmanagement.model.Role;
 import com.hitachi.taskmanagement.model.User;
 import com.hitachi.taskmanagement.model.enums.RoleType;
 import com.hitachi.taskmanagement.repository.RoleRepository;
 import com.hitachi.taskmanagement.repository.UserRepository;
-import com.hitachi.taskmanagement.security.JwtService;
 import com.hitachi.taskmanagement.security.services.UserDetailsImpl;
+import com.hitachi.taskmanagement.service.JwtService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import com.hitachi.taskmanagement.model.dto.request.SignUpRequest;
 import com.hitachi.taskmanagement.model.dto.response.JwtResponse;
 
 import java.util.HashSet;
@@ -60,7 +62,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
