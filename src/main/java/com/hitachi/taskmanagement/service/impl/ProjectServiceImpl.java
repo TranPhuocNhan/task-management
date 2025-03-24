@@ -18,6 +18,7 @@ import com.hitachi.taskmanagement.model.enums.ProjectStatus;
 import com.hitachi.taskmanagement.repository.ProjectRepository;
 import com.hitachi.taskmanagement.repository.UserRepository;
 import com.hitachi.taskmanagement.service.ProjectService;
+import com.hitachi.taskmanagement.aspect.Loggable;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -29,6 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
   private UserRepository userRepository;
 
   @Override
+  @Loggable
   public ProjectResponse createProject(ProjectRequest projectRequest) {
     Project project = new Project();
     project.setName(projectRequest.getName());
@@ -44,6 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
+  @Loggable
   public ProjectResponse updateProject(Long id, ProjectRequest projectRequest) {
     Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
     project.setName(projectRequest.getName());
@@ -57,12 +60,14 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
+  @Loggable
   public ProjectResponse getProjectById(Long id) {
     Project project = projectRepository.findById(id).orElseThrow(() -> new RuntimeException("Project not found"));
     return convertToProjectResponse(project);
   }
 
   @Override
+  @Loggable
   public List<ProjectResponse> getAllProjects(int page, int size) {
     Pageable pageable = PageRequest.of(page, size);
     Page<Project> projects = projectRepository.findAll(pageable);
@@ -71,6 +76,7 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
+  @Loggable
   public void deleteProject(Long id) {
     projectRepository.deleteById(id);
   }

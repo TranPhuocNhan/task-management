@@ -1,5 +1,6 @@
 package com.hitachi.taskmanagement.service.impl;
 
+import com.hitachi.taskmanagement.aspect.Loggable;
 import com.hitachi.taskmanagement.model.User;
 import com.hitachi.taskmanagement.model.dto.UserDTO;
 import com.hitachi.taskmanagement.repository.UserRepository;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Loggable
     @Override
     public UserDTO createUser(UserDTO userDTO) {
         if (existsByUsername(userDTO.getUsername())) {
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService {
         
     }
 
+    @Loggable
     @Override
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findById(userDTO.getId()).orElseThrow(() -> new RuntimeException("User not found"));
@@ -59,6 +61,7 @@ public class UserServiceImpl implements UserService {
         return convertToDTO(savedUser);
     }
 
+    @Loggable
     @Override
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
@@ -66,6 +69,7 @@ public class UserServiceImpl implements UserService {
         return convertToDTO(user);
     }
 
+    @Loggable
     @Override
     public UserDTO getUserByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
@@ -73,6 +77,7 @@ public class UserServiceImpl implements UserService {
         return convertToDTO(user);
     }
 
+    @Loggable
     @Override
     public List<UserDTO> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -80,16 +85,19 @@ public class UserServiceImpl implements UserService {
         return users.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+    @Loggable
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
+    @Loggable
     @Override
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 
+    @Loggable
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
